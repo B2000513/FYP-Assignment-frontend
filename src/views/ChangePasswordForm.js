@@ -20,7 +20,7 @@ const ChangePasswordForm = () => {
             });
             setMessage({ type: 'success', text: response.data.detail });
         } catch (error) {
-            const errorMsg = error.response?.data?.detail || "An error occurred. Please try again.";
+            const errorMsg = error.response?.data?.detail || "The password is incorrect.";
             setMessage({ type: 'danger', text: errorMsg });
         } finally {
             setLoading(false);

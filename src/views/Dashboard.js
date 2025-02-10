@@ -2,6 +2,7 @@ import {useState, useEffect} from 'react'
 import useAxios from "../utils/useAxios"
 import jwt_decode from "jwt-decode";
 import * as XLSX from 'xlsx';
+import UploadExcel from './UploadExcel';
 function Dashboard() {
 
     const [res, setRes] = useState("")
@@ -45,11 +46,15 @@ function Dashboard() {
     //   fetchPostData()
     // }, [])
 
-    const handleFileUpload = (event) => {
+    const handleFileUpload = async (event) => {
       const file = event.target.files[0];
+      if (!file) return;
+    
       const reader = new FileReader();
-  
-      reader.onload = (e) => {
+
+      
+      reader.onload = async (e) => {
+        try {
         const data = new Uint8Array(e.target.result);
         const workbook = XLSX.read(data, { type: 'array' });
         const sheetName = workbook.SheetNames[0];
@@ -57,10 +62,22 @@ function Dashboard() {
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
         setExcelData(jsonData);
   
-        api.post('/upload/', jsonData)
-          .then(response => console.log('Data uploaded to admin site:', response))
-          .catch(error => console.log('Upload error:', error));
-      };
+        // Upload data to the backend
+      const response = await api.post('/upload/', jsonData);
+      if (response.status === 200) {
+        setRes('Data uploaded successfully!');
+      } else {
+        setRes('Unexpected response from the server.');
+      }
+    }catch (error) {
+      console.error('Error:', error);
+      setRes('Upload failed. ${errormessage}');
+    }
+  };
+  reader.onerror = () => {
+    console.error('Error reading file:', reader.error);
+    setRes('Failed to read the file.');
+  };
   
       reader.readAsArrayBuffer(file);
     };

@@ -32,7 +32,24 @@ const useAxios = () => {
     return req;
   });
 
-  return axiosInstance;
+  const uploadFile = async (file) => {
+    const formData = new FormData();
+    formData.append("excel_file", file);
+
+    try {
+      const response = await axiosInstance.post("/customers/upload/", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Upload failed:", error);
+      throw error;
+    }
+  };
+
+  return{axiosInstance , uploadFile};
 };
 
 export default useAxios;

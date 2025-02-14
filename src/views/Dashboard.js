@@ -62,26 +62,35 @@ function Dashboard() {
         const jsonData = XLSX.utils.sheet_to_json(worksheet);
         setExcelData(jsonData);
   
-        // Upload data to the backend
-      const response = await api.post('/upload/', jsonData);
+        // Now upload the actual file to the backend
+      const formData = new FormData();
+      formData.append('excel_file', file);  // Make sure this matches Django's expectation
+
+      const response = await api.post('/upload/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
       if (response.status === 200) {
         setRes('Data uploaded successfully!');
       } else {
         setRes('Unexpected response from the server.');
       }
-    }catch (error) {
-      console.error('Error:', error);
-      setRes('Upload failed. ${errormessage}');
+
+    } catch (error) {
+      console.error('Error:', error.response ? error.response.data : error);
+      setRes(`Upload failed. ${error.message}`);
     }
   };
+
   reader.onerror = () => {
     console.error('Error reading file:', reader.error);
     setRes('Failed to read the file.');
   };
-  
-      reader.readAsArrayBuffer(file);
-    };
 
+  reader.readAsArrayBuffer(file);  // Read file for display
+};
 
   return (
     <div>
@@ -171,6 +180,7 @@ function Dashboard() {
             <div className="mb-4">
             <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} className="form-control" />
           </div>
+          <UploadExcel />
             </div>
             
           </div>

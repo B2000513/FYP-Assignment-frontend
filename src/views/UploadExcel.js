@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import useAxios from '../utils/useAxios';
+import { Box, Button, Typography, Alert, Input } from '@mui/material';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 
 const UploadExcel = () => {
+    const { axiosInstance } = useAxios();  // ✅ Use axiosInstance instead of manually importing axios
     const [file, setFile] = useState(null);
     const [message, setMessage] = useState('');
+    const [error, setError] = useState(false);
 
     const handleFileChange = (e) => {
         setFile(e.target.files[0]);
@@ -12,6 +16,7 @@ const UploadExcel = () => {
     const handleUpload = async () => {
         if (!file) {
             setMessage('Please select a file.');
+            setError(true);
             return;
         }
 
@@ -19,27 +24,52 @@ const UploadExcel = () => {
         formData.append('excel_file', file);
 
         try {
-            const response = await axios.post('/api/upload-customers/', formData, {
+            const response = await axiosInstance.post('/upload/', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
-                    Authorization: `Bearer YOUR_ACCESS_TOKEN`, // Add this if using JWT
                 },
             });
+
             setMessage(response.data.message);
+            console.log("Uploaded file:", file); 
+            setError(false);
         } catch (error) {
             setMessage(error.response?.data?.error || 'Upload failed.');
+            setError(true);
         }
     };
 
     return (
-        <div className="p-4 bg-gray-100 rounded shadow-md">
-            <h2 className="text-xl font-bold mb-4">Upload Customer Data</h2>
-            <input type="file" accept=".xlsx, .xls" onChange={handleFileChange} className="mb-2" />
-            <button onClick={handleUpload} className="px-4 py-2 bg-blue-500 text-white rounded">
+        <Box sx={{ p: 4, backgroundColor: '#f9f9f9', borderRadius: 2, boxShadow: 3 }}>
+            <Typography variant="h5" fontWeight="bold" mb={2}>
+                Upload Customer Data
+            </Typography>
+
+            <Input 
+                type="file"
+                inputProps={{ accept: '.xlsx, .xls' }}
+                onChange={handleFileChange}
+                sx={{ mb: 2 }}
+                fullWidth
+            />
+
+            <Button 
+                variant="contained"
+                color="primary"
+                onClick={handleUpload}
+                startIcon={<CloudUploadIcon />}
+                fullWidth
+                sx={{ mt: 1 }}
+            >
                 Upload
-            </button>
-            {message && <p className="mt-2 text-red-500">{message}</p>}
-        </div>
+            </Button>
+
+            {message && (
+                <Alert severity={error ? "error" : "success"} sx={{ mt: 2 }}>
+                    {message}
+                </Alert>
+            )}
+        </Box>
     );
 };
 

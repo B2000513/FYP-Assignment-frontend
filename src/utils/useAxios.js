@@ -1,5 +1,5 @@
 import axios from "axios";
-import  jwtDecode  from "jwt-decode";
+import jwtDecode from "jwt-decode";
 import dayjs from "dayjs";
 import { useContext } from "react";
 import AuthContext from "../context/AuthContext";
@@ -26,12 +26,26 @@ const useAxios = () => {
     localStorage.setItem("authTokens", JSON.stringify(response.data));
 
     setAuthTokens(response.data);
-    setUser(jwt_decode(response.data.access));
+    setUser(jwtDecode(response.data.access));
 
     req.headers.Authorization = `Bearer ${response.data.access}`;
     return req;
   });
 
+  // 🔹 Fetch customers from API
+  const getCustomers = async () => {
+    try {
+      console.log("Sending request with token:", authTokens?.access); // 🔹 Debugging Log
+
+      const response = await axiosInstance.get("/customers/");
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching customers:", error);
+      throw error;
+    }
+  };
+
+  // 🔹 Upload file function
   const uploadFile = async (file) => {
     const formData = new FormData();
     formData.append("excel_file", file);
@@ -49,7 +63,7 @@ const useAxios = () => {
     }
   };
 
-  return{axiosInstance , uploadFile};
+  return { axiosInstance, getCustomers, uploadFile };
 };
 
 export default useAxios;

@@ -3,6 +3,7 @@ import useAxios from "../utils/useAxios"
 import jwt_decode from "jwt-decode";
 import * as XLSX from 'xlsx';
 import UploadExcel from './UploadExcel';
+import Overview from './overview';
 function Dashboard() {
 
     const [res, setRes] = useState("")
@@ -188,7 +189,7 @@ function Dashboard() {
         <div className='alert alert-success'>
           <strong>{res}</strong>
         </div>
-        <h2>Section title</h2>
+        <Overview />
         {excelData.length > 0 && (
             <div className="table-responsive">
               <table className="table table-striped table-bordered">

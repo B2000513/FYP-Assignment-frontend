@@ -109,30 +109,6 @@ function Dashboard() {
             </li>
             <li className="nav-item">
               <a className="nav-link" href="#">
-                <span data-feather="file" />
-                Orders
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                <span data-feather="shopping-cart" />
-                Products
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                <span data-feather="users" />
-                Customers
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
-                <span data-feather="bar-chart-2" />
-                Reports
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link" href="#">
                 <span data-feather="layers" />
                 Integrations
               </a>
@@ -178,17 +154,13 @@ function Dashboard() {
       
           <div className="btn-toolbar mb-2 mb-md-0">
             <div className="btn-group mr-2">
-            <div className="mb-4">
-            <input type="file" accept=".xlsx, .xls" onChange={handleFileUpload} className="form-control" />
-          </div>
-          <UploadExcel />
-            </div>
             
+          <UploadExcel />
+           
+            </div>
           </div>
         </div>
-        <div className='alert alert-success'>
-          <strong>{res}</strong>
-        </div>
+        
         <Overview />
         {excelData.length > 0 && (
             <div className="table-responsive">

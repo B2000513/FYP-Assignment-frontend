@@ -47,7 +47,7 @@ const UploadExcel = () => {
 
             <Input 
                 type="file"
-                inputProps={{ accept: '.xlsx, .xls' }}
+                inputProps={{ accept: '.xlsx, .xls , .csv' }}
                 onChange={handleFileChange}
                 sx={{ mb: 2 }}
                 fullWidth

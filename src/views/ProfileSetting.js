@@ -6,7 +6,7 @@ import Swal from 'sweetalert2';
 import ChangePasswordForm from './ChangePasswordForm';
 
   const ProfileSettings = () => {
-    const axiosInstance = useAxios();
+    const { axiosInstance } = useAxios();
     const { authTokens } = useContext(AuthContext);
     const history = useHistory();
 

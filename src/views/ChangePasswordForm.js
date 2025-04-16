@@ -7,7 +7,7 @@ const ChangePasswordForm = () => {
     const [message, setMessage] = useState(null);
     const [loading, setLoading] = useState(false);
 
-    const axiosInstance = useAxios();
+    const {axiosInstance} = useAxios();
 
     const handleChangePassword = async (e) => {
         e.preventDefault();
